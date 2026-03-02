@@ -219,7 +219,7 @@ IP не используются.
 
 ------------------------------------------------------------------------
 ### Логическая схема инфраструктуры
-Internet
+<pre>Internet
                         |
                 158.160.223.111
                Application Load Balancer
@@ -236,9 +236,10 @@ Internet
  Bastion      Elastic      Kibana      Zabbix
 10.10.0.x    10.10.1.x    10.10.0.x   10.10.0.x
 Public IP    Private IP   Public IP   Public IP
+</pre>
 
 ### Схема доступа администрирования
-Администратор
+<pre>Администратор
     |
     | SSH
     |
@@ -262,10 +263,11 @@ elastic.ru-central1.internal
         |
       Kibana
 kibana.ru-central1.internal
+</pre>
 
 ### Схема мониторинга
 
-Zabbix Server
+<pre>Zabbix Server
 zabbix.ru-central1.internal
         |
 
@@ -277,11 +279,11 @@ Snapshot Schedule
         |
 
 web1 web2 elastic zabbix
-disk disk  disk     disk
+disk disk  disk     disk</pre>
 
 ### Схема сетевой безопасности
 
-Разрешено:
+<pre>Разрешено:
 
 Internet → Load Balancer → Web Servers
 Internet → Bastion → Private Servers
@@ -292,7 +294,7 @@ Private → Zabbix
 
 Internet → Web Servers
 Internet → Elasticsearch
-Internet → Private Network
+Internet → Private Network</pre>
 
 
 ## Итог
