@@ -315,3 +315,9 @@ Internet → Private Network</pre>
 -   логи
 -   backup
 -   automation
+
+### Screenshots
+
+![Configuration-Hosts](screenshots/elastic.png)
+![Configuration-Hosts](screenshots/zabbix-hosts.png)
+![Configuration-Hosts](screenshots/zabbix.png)
