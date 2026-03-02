@@ -1,0 +1,56 @@
+- name: Add Zabbix repo and install Zabbix Agent2
+  hosts:
+    - web
+    - elastic
+    - kibana
+    - zabbix
+  become: true
+
+  vars:
+    zabbix_major: "7.0"
+    zabbix_repo_deb: "zabbix-release_latest+ubuntu24.04_all.deb"
+    zabbix_repo_url: "https://repo.zabbix.com/zabbix/{{ zabbix_major }}/ubuntu/pool/main/z/zabbix-release/{{ zabbix_repo_deb }}"
+    zbx_server_active: "zabbix.ru-central1.internal"
+
+  tasks:
+    - name: Install prerequisites
+      apt:
+        name:
+          - ca-certificates
+          - curl
+        state: present
+        update_cache: yes
+
+    - name: Download Zabbix release package
+      get_url:
+        url: "{{ zabbix_repo_url }}"
+        dest: "/tmp/{{ zabbix_repo_deb }}"
+        mode: "0644"
+
+    - name: Install Zabbix release package
+      apt:
+        deb: "/tmp/{{ zabbix_repo_deb }}"
+
+    - name: Apt update after adding Zabbix repo
+      apt:
+        update_cache: yes
+
+    - name: Install zabbix-agent2
+      apt:
+        name: zabbix-agent2
+        state: present
+
+    - name: Configure zabbix_agent2.conf (active checks)
+      lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - { regexp: '^ServerActive=', line: 'ServerActive={{ zbx_server_active }}:10051' }
+        - { regexp: '^Hostname=',     line: 'Hostname={{ inventory_hostname }}' }
+
+    - name: Restart and enable zabbix-agent2
+      systemd:
+        name: zabbix-agent2
+        state: restarted
+        enabled: yes

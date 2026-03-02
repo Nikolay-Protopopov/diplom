@@ -1,0 +1,47 @@
+- name: Fix Filebeat (nginx module + stdout logs)
+  hosts: web
+  become: yes
+
+  tasks:
+    - name: Write filebeat config (nginx module)
+      ansible.builtin.copy:
+        dest: /opt/filebeat/filebeat.yml
+        mode: "0644"
+        content: |
+          filebeat.modules:
+            - module: nginx
+              access:
+                enabled: true
+                var.paths: ["/var/log/nginx/access.log*"]
+              error:
+                enabled: true
+                var.paths: ["/var/log/nginx/error.log*"]
+
+          processors:
+            - add_host_metadata: {}
+            - add_cloud_metadata: {}
+            - add_fields:
+                target: ""
+                fields:
+                  env: diploma
+                  service: nginx
+
+          output.elasticsearch:
+            hosts: ["http://elastic.ru-central1.internal:9200"]
+
+          setup.ilm.enabled: false
+          setup.template.enabled: false
+          setup.kibana.host: "http://kibana.ru-central1.internal:5601"
+
+    - name: Recreate filebeat container with -e (log to stdout)
+      community.docker.docker_container:
+        name: filebeat
+        image: docker.elastic.co/beats/filebeat:8.12.2
+        state: started
+        restart_policy: always
+        user: root
+        command: ["-e", "--strict.perms=false"]
+        recreate: true
+        volumes:
+          - /opt/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+          - /var/log/nginx:/var/log/nginx:ro

@@ -1,0 +1,14 @@
+- name: Allow ubuntu user to run docker without sudo
+  hosts: all
+  become: true
+  tasks:
+    - name: Ensure docker group exists
+      group:
+        name: docker
+        state: present
+
+    - name: Add ubuntu to docker group
+      user:
+        name: ubuntu
+        groups: docker
+        append: yes

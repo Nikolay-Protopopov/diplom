@@ -1,0 +1,26 @@
+- name: Deploy Elasticsearch
+  hosts: elastic
+  become: yes
+
+  tasks:
+    - name: Set vm.max_map_count
+      ansible.builtin.sysctl:
+        name: vm.max_map_count
+        value: "262144"
+        state: present
+        reload: yes
+
+    - name: Run Elasticsearch container
+      community.docker.docker_container:
+        name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+        state: started
+        restart_policy: always
+        ports:
+          - "9200:9200"
+        env:
+          discovery.type: single-node
+          xpack.security.enabled: "false"
+          xpack.security.http.ssl.enabled: "false"
+          xpack.security.transport.ssl.enabled: "false"
+          ES_JAVA_OPTS: "-Xms512m -Xmx512m"

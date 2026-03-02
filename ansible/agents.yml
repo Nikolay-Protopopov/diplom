@@ -1,0 +1,40 @@
+- name: Install and configure Zabbix Agent2
+  hosts:
+    - web
+    - elastic
+    - kibana
+    - zabbix
+  become: true
+
+  vars:
+    zbx_server: "zabbix.ru-central1.internal"
+    zbx_listen_port: 10050
+
+  tasks:
+    - name: Install zabbix-agent2
+      apt:
+        name: zabbix-agent2
+        state: present
+        update_cache: yes
+
+    - name: Configure zabbix_agent2.conf (passive + active)
+      lineinfile:
+        path: /etc/zabbix/zabbix_agent2.conf
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      loop:
+        - { regexp: '^Server=',       line: 'Server={{ zbx_server }}' }
+        - { regexp: '^ServerActive=', line: 'ServerActive={{ zbx_server }}:10051' }
+        - { regexp: '^Hostname=',     line: 'Hostname={{ inventory_hostname }}' }
+        - { regexp: '^ListenPort=',   line: 'ListenPort={{ zbx_listen_port }}' }
+
+    - name: Restart and enable zabbix-agent2
+      systemd:
+        name: zabbix-agent2
+        state: restarted
+        enabled: yes
+
+    - name: Show agent config (debug)
+      shell: |
+        grep -E '^(Server=|ServerActive=|Hostname=|ListenPort=)' /etc/zabbix/zabbix_agent2.conf
+      changed_when: false

@@ -1,0 +1,91 @@
+- name: Configure web servers (nginx + static site)
+  hosts: web
+  become: true
+  vars:
+    site_root: /var/www/site
+
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Ensure site root exists
+      file:
+        path: "{{ site_root }}"
+        state: directory
+        mode: "0755"
+
+    - name: Deploy static index.html (with author)
+      copy:
+        dest: "{{ site_root }}/index.html"
+        mode: "0644"
+        content: |
+          <!doctype html>
+          <html lang="ru">
+          <head>
+            <meta charset="utf-8" />
+            <title>Diploma Project</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+              .box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 720px; }
+              h1 { color: #2c3e50; margin-top: 0; }
+              .server { color: #27ae60; font-weight: bold; }
+              .muted { color: #666; }
+              code { background: #eee; padding: 2px 6px; border-radius: 4px; }
+            </style>
+          </head>
+          <body>
+            <div class="box">
+              <h1>Дипломная работа</h1>
+
+              <p>Студент: <b>Протопопов Николай</b></p>
+              <p class="muted">Профессия: Системный администратор</p>
+              <p class="muted">Проект: Отказоустойчивая инфраструктура в Yandex Cloud</p>
+
+              <hr>
+
+              <p>Web сервер: <span class="server">{{ inventory_hostname }}</span></p>
+              <p class="muted">Проверка балансировки: обновляйте страницу / делайте curl на ALB</p>
+            </div>
+          </body>
+          </html>
+
+    - name: Configure nginx vhost
+      copy:
+        dest: /etc/nginx/sites-available/diploma-site
+        mode: "0644"
+        content: |
+          server {
+            listen 80 default_server;
+            listen [::]:80 default_server;
+            server_name _;
+            root {{ site_root }};
+            index index.html;
+
+            location / {
+              try_files $uri $uri/ =404;
+            }
+          }
+
+    - name: Enable vhost
+      file:
+        src: /etc/nginx/sites-available/diploma-site
+        dest: /etc/nginx/sites-enabled/diploma-site
+        state: link
+        force: true
+
+    - name: Disable default site if exists
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Test nginx config
+      command: nginx -t
+
+    - name: Restart and enable nginx
+      systemd:
+        name: nginx
+        state: restarted
+        enabled: true

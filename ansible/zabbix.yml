@@ -1,0 +1,65 @@
+- name: Deploy Zabbix Server (Docker)
+  hosts: zabbix
+  become: true
+
+  tasks:
+
+    - name: Create zabbix directory
+      file:
+        path: /opt/zabbix
+        state: directory
+
+    - name: Create docker-compose.yml
+      copy:
+        dest: /opt/zabbix/docker-compose.yml
+        mode: "0644"
+        content: |
+
+          services:
+
+            postgres:
+              image: postgres:15
+              restart: always
+              environment:
+                POSTGRES_DB: zabbix
+                POSTGRES_USER: zabbix
+                POSTGRES_PASSWORD: zabbix
+              volumes:
+                - postgres_data:/var/lib/postgresql/data
+
+            zabbix-server:
+              image: zabbix/zabbix-server-pgsql:latest
+              restart: always
+              environment:
+                DB_SERVER_HOST: postgres
+                POSTGRES_DB: zabbix
+                POSTGRES_USER: zabbix
+                POSTGRES_PASSWORD: zabbix
+              depends_on:
+                - postgres
+              ports:
+                - "10051:10051"
+
+            zabbix-web:
+              image: zabbix/zabbix-web-nginx-pgsql:latest
+              restart: always
+              environment:
+                DB_SERVER_HOST: postgres
+                POSTGRES_DB: zabbix
+                POSTGRES_USER: zabbix
+                POSTGRES_PASSWORD: zabbix
+                ZBX_SERVER_HOST: zabbix-server
+                PHP_TZ: Europe/Moscow
+              depends_on:
+                - postgres
+                - zabbix-server
+              ports:
+                - "80:8080"
+
+          volumes:
+            postgres_data:
+
+    - name: Start Zabbix containers
+      shell: docker compose up -d
+      args:
+        chdir: /opt/zabbix
