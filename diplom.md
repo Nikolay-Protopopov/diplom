@@ -258,8 +258,10 @@ Bastion Host
     |
 
 web1 web2 elastic kibana zabbix
+</pre>
 
 ### Схема сбора логов
+<pre>
 web-1          web-2
 Filebeat       Filebeat
    |              |
