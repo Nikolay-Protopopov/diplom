@@ -85,6 +85,7 @@ kibana.ru-central1.internal ssh zabbix.ru-central1.internal
 
 web-alb
 http://protopopov.su/
+
 158.160.223.111
 
 Health checks:
