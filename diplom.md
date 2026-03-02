@@ -321,3 +321,5 @@ Internet → Private Network</pre>
 ![Configuration-Hosts](screenshots/elastic.png)
 ![Configuration-Hosts](screenshots/zabbix-hosts.png)
 ![Configuration-Hosts](screenshots/zabbix.png)
+![Configuration-Hosts](screenshots/cloud-dash.png)
+![Configuration-Hosts](screenshots/cloud-vm.png)
