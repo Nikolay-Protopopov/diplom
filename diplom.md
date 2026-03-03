@@ -87,7 +87,7 @@ web-alb
 
 -   http://protopopov.su/
 
--   158.160.223.111
+-   http://158.160.223.111
 
 Health checks:
 
@@ -125,9 +125,9 @@ Diploma Infrastructure
 ------------------------------------------------------------------------
 
 ## ELK
-http://elk.protopopov.su:5601
+-   http://elk.protopopov.su:5601
 
-http://130.193.39.15:5601 
+-   http://130.193.39.15:5601 
 
 ### Elasticsearch
 
