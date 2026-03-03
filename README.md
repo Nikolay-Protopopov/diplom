@@ -84,9 +84,10 @@ kibana.ru-central1.internal ssh zabbix.ru-central1.internal
 ## Load Balancer
 
 web-alb
-http://protopopov.su/
 
-158.160.223.111
+-   http://protopopov.su/
+
+-   http://158.160.223.111
 
 Health checks:
 
@@ -97,9 +98,9 @@ HTTP / port 80
 ## Мониторинг
 
 Zabbix Docker:
-http://zabbix.protopopov.su/
+-   http://zabbix.protopopov.su/
 
-http://158.160.50.27 
+-   http://158.160.50.27 
 
 -   PostgreSQL
 -   Zabbix Server
@@ -124,9 +125,9 @@ Diploma Infrastructure
 ------------------------------------------------------------------------
 
 ## ELK
-http://elk.protopopov.su:5601
+-   http://elk.protopopov.su:5601
 
-http://130.193.39.15:5601 
+-   http://130.193.39.15:5601 
 
 ### Elasticsearch
 
@@ -282,9 +283,9 @@ zabbix.ru-central1.internal
         |
 
 web1 web2 elastic kibana zabbix
-
+</pre>
 ### Схема резервного копирования
-
+<pre>
 Snapshot Schedule
         |
 
