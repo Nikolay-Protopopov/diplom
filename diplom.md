@@ -85,9 +85,9 @@ kibana.ru-central1.internal ssh zabbix.ru-central1.internal
 
 web-alb
 
-http://protopopov.su/
+-   http://protopopov.su/
 
-158.160.223.111
+-   158.160.223.111
 
 Health checks:
 
@@ -98,10 +98,9 @@ HTTP / port 80
 ## Мониторинг
 
 Zabbix Docker:
+-   http://zabbix.protopopov.su/
 
-http://zabbix.protopopov.su/
-
-http://158.160.50.27 
+-   http://158.160.50.27 
 
 -   PostgreSQL
 -   Zabbix Server
