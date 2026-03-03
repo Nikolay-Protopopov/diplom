@@ -84,6 +84,7 @@ kibana.ru-central1.internal ssh zabbix.ru-central1.internal
 ## Load Balancer
 
 web-alb
+
 http://protopopov.su/
 
 158.160.223.111
@@ -97,6 +98,7 @@ HTTP / port 80
 ## Мониторинг
 
 Zabbix Docker:
+
 http://zabbix.protopopov.su/
 
 http://158.160.50.27 
@@ -282,9 +284,9 @@ zabbix.ru-central1.internal
         |
 
 web1 web2 elastic kibana zabbix
-
+</pre>
 ### Схема резервного копирования
-
+<pre>
 Snapshot Schedule
         |
 
